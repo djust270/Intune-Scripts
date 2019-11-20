@@ -6,23 +6,23 @@ $jsonRepresentation = '{
             "date_added": "13218554400308142",
             "guid": "278dff65-0d68-4b8d-9cf8-60ea3b2dbe9d",
             "id": "5",
-            "name": "Google",
+            "name": "ParkPlace",
             "type": "url",
-            "url": "google.com"
+            "url": "http://parkplace.pkhotelsandresorts.com/"
          }, {
             "date_added": "13218554442843596",
             "guid": "3d87584d-a71f-4ff0-aa18-0c79efcc29c7",
             "id": "6",
-            "name": "Reddit",
+            "name": "Workday",
             "type": "url",
-            "url": "Reddit.com"
+            "url": "http://pkotelsandresorts.com/workday"
          }, {
             "date_added": "13218554452536920",
             "guid": "179fa996-6b4b-4d9a-beb7-de96fa0d848a",
             "id": "7",
-            "name": "Adobe",
+            "name": "DayForce",
             "type": "url",
-            "url": "http://Adobe.com"
+            "url": "http://pkotelsandresorts.com/time"
          }, {
             "date_added": "13218554465874578",
             "guid": "c03a072c-9956-4429-9737-cc770ecd34c5",
@@ -66,9 +66,11 @@ $jsonRepresentation = '{
    },
    "version": 1
 }'
-
-
+      
 $users = Get-ChildItem "C:\Users" -Exclude Public
 $users | ForEach-Object {
-New-Item -ItemType Directory -Path "C:\Users\$($_.Name)\AppData\Local\Google\chrome\User Data\default" -force 
-Add-Content -path "C:\Users\$($_.Name)\AppData\Local\Google\chrome\User Data\default\bookmarks" $jsonRepresentation | ConvertTo-Json}
+New-Item -ItemType Directory -Path "C:\Users\$($_.Name)\AppData\Local\Google\chrome\User Data\default" -force} 
+
+
+$users | ForEach-Object {
+Add-Content -path "C:\Users\$($_.Name)\AppData\Local\Google\chrome\User Data\default\bookmarks" $jsonRepresentation }
