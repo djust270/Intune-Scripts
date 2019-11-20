@@ -1,6 +1,3 @@
-﻿$user = $env:username
-$targetfolder = "c:\users\$user\appdata\local\Google\Chrome\User Data\Default"
-
 $jsonRepresentation = '{
    "checksum": "8a83fd48cdea66f88b0dcf708bceae47",
    "roots": {
@@ -71,7 +68,7 @@ $jsonRepresentation = '{
 }'
 
 
-foreach ($profile in $profiles) 
-{      
-    New-Item -ItemType Directory -Path $targetfolder -force      
-    Set-Content $targetfolder\bookmarks $jsonRepresentation -force | ConvertTo-Json}
+$users = Get-ChildItem "C:\Users" -Exclude Public
+$users | ForEach-Object {
+New-Item -ItemType Directory -Path "C:\Users\$($_.Name)\AppData\Local\Google\chrome\User Data\default" -force 
+Add-Content -path "C:\Users\$($_.Name)\AppData\Local\Google\chrome\User Data\default\bookmarks" $jsonRepresentation | ConvertTo-Json}
