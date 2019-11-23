@@ -51,7 +51,8 @@ $layout = '<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.micro
     Get-Item $userpath\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml | % {$_.CreationTime = $time}
     Get-Item $userpath\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml | % {$_.LastWriteTime = $time}    
     
-    Remove-Item HKU:\$UserSID\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\Cache\DefaultAccount\*$start.tilegrid$windows.data.curatedtilecollection.tilecollection  -Force -Recurse
+    # Remove-Item HKU:\$UserSID\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\Cache\DefaultAccount\*$start.tilegrid$windows.data.curatedtilecollection.tilecollection  -Force -Recurse
+      Remove-Item HKU:\$UserSID\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\ -Force -recurse
     Get-Process Explorer | Stop-Process
     remove-psdrive -Name HKU'
 
