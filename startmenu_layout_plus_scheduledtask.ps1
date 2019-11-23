@@ -54,6 +54,15 @@ $layout = '<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.micro
     # Remove-Item HKU:\$UserSID\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\Cache\DefaultAccount\*$start.tilegrid$windows.data.curatedtilecollection.tilecollection  -Force -Recurse
       Remove-Item HKU:\$UserSID\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store -Force -recurse
     Get-Process Explorer | Stop-Process
+    
+    sleep 5
+    
+    $explorer = get-process explorer
+    
+    if ($explorer -eq $false)
+    {
+    start-process explorer
+    }
     remove-psdrive -Name HKU'
 
     new-item c:\automation -ItemType directory -force
