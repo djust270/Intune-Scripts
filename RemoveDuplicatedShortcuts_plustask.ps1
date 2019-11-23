@@ -1,4 +1,4 @@
-#If you are enforcing One Drive Know File Move, redirecting the Desktop, its possible some shortcuts may be duplicated 
+#If you are enforcing One Drive Known File Move, redirecting the Desktop, its possible some shortcuts may be duplicated 
 #between the time the computer enrolls in intune and one drive redirects the desktop. This script will create a
 #scheduled task to clear up and remove duplicated shortcuts if they exist at logon. 
 #Just add in the shortcut name and your companies One Drive path. 
