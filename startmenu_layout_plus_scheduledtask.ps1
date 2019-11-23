@@ -68,7 +68,7 @@ $layout = '<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.micro
     new-item c:\automation -ItemType directory -force
     set-content c:\automation\startlayout.ps1 $content
 
-    #This Section Created the Scheduled task to run our startlayout script
+    #This Section Creates the Scheduled task to run our startlayout script
 
     if( -Not (Get-ScheduledTask -TaskName "Start Menu Layout" -ErrorAction SilentlyContinue -OutVariable task) )
     {
