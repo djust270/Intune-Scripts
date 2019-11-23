@@ -8,10 +8,10 @@ $Path = "HKLM\SOFTWARE\Microsoft\WIndows NT\CurrentVersion\Profilelist\$UserSID"
 $UserPath = Get-ItemProperty "Registry::$path" -name "ProfileImagePath" | select -ExpandProperty ProfileImagePath
 
 
-$duplicateshortcuts = "ParkPlace - Copy.lnk","Workday - copy.lnk","Dayforce - copy.lnk" | foreach {test-path "$UserPath\OneDrive - Park Hotels & Resorts\Desktop\$_."}
+$duplicateshortcuts = "shortcut1.lnk","shortcut2.lnk","shortcut3.lnk" | foreach {test-path "$UserPath\OneDrive - YourCompany\Desktop\$_."}
 if ($duplicateshortcuts -eq $true)
 {
-$OldShortcuts = @("$UserPath\OneDrive - Park Hotels & Resorts\Desktop\ParkPlace - copy.lnk","$UserPath\OneDrive - Park Hotels & Resorts\Desktop\Workday - copy.lnk","$UserPath\OneDrive - Park Hotels & Resorts\Desktop\Dayforce - copy.lnk","$UserPath\OneDrive - Park Hotels & Resorts\Desktop\Microsoft Edge - Copy.lnk")
+$OldShortcuts = @("$UserPath\OneDrive - YourCompany\Desktop\shortcut1.lnk","$UserPath\OneDrive - YourCompany\Desktop\shortcut1.lnk.lnk","$UserPath\OneDrive - YourCompany\Desktop\shortcut3.lnk","$UserPath\OneDrive - YourCompany\Desktop\Microsoft Edge - Copy.lnk")
 Get-ChildItem $OldShortcuts | Remove-Item
 }'
 
