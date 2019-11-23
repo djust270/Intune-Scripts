@@ -53,7 +53,7 @@ $layout = '<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.micro
     
     # Remove-Item HKU:\$UserSID\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\Cache\DefaultAccount\*$start.tilegrid$windows.data.curatedtilecollection.tilecollection  -Force -Recurse
       Remove-Item HKU:\$UserSID\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store -Force -recurse
-    Get-Process Explorer | Stop-Process
+    Get-Process Explorer | Stop-Process -force
     
     sleep 5
     
@@ -74,7 +74,7 @@ $layout = '<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.micro
     {
         $Params = @{
         Action = (New-ScheduledTaskAction -Execute 'powershell' -Argument '-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass C:\Automation\startlayout.ps1')
-        Trigger = (New-ScheduledTaskTrigger -once -At ([DateTime]::Now.AddMinutes(1)) -RepetitionInterval (New-TimeSpan -Minutes 15) -RepetitionDuration (New-TimeSpan -Hours 6))
+        Trigger = (New-ScheduledTaskTrigger -once -At ([DateTime]::Now.AddMinutes(1)) -RepetitionInterval (New-TimeSpan -Minutes 15) -RepetitionDuration (New-TimeSpan -Hours 3))
         Principal = (New-ScheduledTaskPrincipal -GroupId "System")
         TaskName = 'Start Menu Layout'
         Description = 'Start Menu Layout'
