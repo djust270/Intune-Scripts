@@ -33,7 +33,7 @@ $layout = '<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.micro
 </LayoutModificationTemplate>'
     
     $UserSID = (New-Object -ComObject Microsoft.DiskQuota).TranslateLogonNameToSID((Get-WmiObject -Class Win32_ComputerSystem).Username)
-    $Path = "HKLM\SOFTWARE\Microsoft\WIndows NT\CurrentVersion\Profilelist\$UserSID"
+    $Path = "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Profilelist\$UserSID"
     $UserPath = Get-ItemProperty "Registry::$path" -name "ProfileImagePath" | select -ExpandProperty ProfileImagePath
     
          Set-content $userpath\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml $layout -Force
@@ -42,7 +42,7 @@ $layout = '<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.micro
 
     $content = 'New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS
     $UserSID = (New-Object -ComObject Microsoft.DiskQuota).TranslateLogonNameToSID((Get-WmiObject -Class Win32_ComputerSystem).Username)
-    $Path = "HKLM\SOFTWARE\Microsoft\WIndows NT\CurrentVersion\Profilelist\$UserSID"
+    $Path = "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Profilelist\$UserSID"
     $UserPath = Get-ItemProperty "Registry::$path" -name "ProfileImagePath" | select -ExpandProperty ProfileImagePath
     $time = Get-Date -Format "dddd MM/dd/yyyy HH:mm K"
     
