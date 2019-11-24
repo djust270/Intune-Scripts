@@ -4,5 +4,6 @@
 $UserSID = (New-Object -ComObject Microsoft.DiskQuota).TranslateLogonNameToSID((Get-WmiObject -Class Win32_ComputerSystem).Username)
 
 $Path = "HKU\$UserSID\PATH_TO_KEY_TO_CREATE"
+New-PSDrive -PSProvider Registry -Name HKU -Root HKEY_USERS
 Reg Add $path /f
 reg add $path /v DWORDNAME /t REG_DWORD /d 1 /f
