@@ -1,0 +1,2 @@
+﻿New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\Domains\sharepoint.com\TENANTNAME-myfiles" -force | New-ItemProperty -name Https -Value 2
+New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\Domains\sharepoint.com\TENANTNAME-files" -force | New-ItemProperty -name Https -Value 2
