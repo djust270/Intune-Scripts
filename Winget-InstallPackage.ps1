@@ -13,9 +13,9 @@
 .PARAMETER PackageID
 Specify the WinGet ID. Use WinGet Search "SoftwareName" to locate the PackageID
     .EXAMPLE
-powershell.exe -exectuionpolicy bypass -file  Winget-InstallPackage.ps1 -PackageID Google.Chrome -Log ChromeWingetInstall.log
+powershell.exe -exectuionpolicy bypass -file  Winget-InstallPackage.ps1 -PackageID "Google.Chrome" -Log "ChromeWingetInstall.log"
 	.EXAMPLE
-powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID Notepad++.Notepad++ -Log NotepadPlusPlus.log
+powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Notepad++.Notepad++" -Log "NotepadPlusPlus.log"
 #>
 param (
 	$PackageID,
@@ -48,7 +48,7 @@ If ($ENV:PROCESSOR_ARCHITEW6432 -eq "AMD64")
 }
 
 #region HelperFunctions
-function InstallWingetAsSystem # Install WinGet as logged on user
+function InstallWingetAsSystem # Install WinGet as logged on user by creating a scheduled task
 {
 	$script = @'
 $hasPackageManager = Get-AppPackage -name "Microsoft.DesktopAppInstaller"
@@ -64,9 +64,9 @@ $hasPackageManager = Get-AppPackage -name "Microsoft.DesktopAppInstaller"
 		Add-AppxPackage -Path $latestRelease.browser_download_url
 	}
 '@
-	if (!(test-path C:\automation)) { mkdir C:\automation }
-	$script | out-file C:\automation\script.ps1
-	$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-executionpolicy bypass -WindowStyle minimized -file C:\automation\script.ps1"
+	if (!(test-path "$env:systemdrive\automation")) { mkdir "$env:systemdrive\automation" }
+	$script | out-file "$env:systemdrive\automation\script.ps1"
+	$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-executionpolicy bypass -WindowStyle minimized -file %HOMEDRIVE%\automation\script.ps1"
 	$trigger = New-ScheduledTaskTrigger -AtLogOn
 	$principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -expand UserName)
 	$task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
