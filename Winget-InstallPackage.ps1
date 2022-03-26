@@ -72,7 +72,7 @@ $hasPackageManager = Get-AppPackage -name "Microsoft.DesktopAppInstaller"
 	$task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
 	Register-ScheduledTask RunScript -InputObject $task
 	Start-ScheduledTask -TaskName RunScript
-	Start-Sleep -Seconds 2
+	Start-Sleep -Seconds 120
 	Unregister-ScheduledTask -TaskName RunScript -Confirm:$false
 	Remove-Item C:\automation\script.ps1
 }
@@ -139,7 +139,10 @@ if (!($Winget))
 		Write-Log -message "Attempting to install Winget as System under $($loggedOnUser)"
 		InstallWingetAsSystem
 		$Winget = gci "C:\Program Files\WindowsApps" -Recurse -File | where { $_.name -like "AppInstallerCLI.exe" -or $_.name -like "Winget.exe" } | select -ExpandProperty fullname
+		# If more than one version of Winget, select the latest
 		if ($Winget.count -gt 1) { $Winget = $Winget[-1] }
+		# If WinGet is not found, download copy from Blob storage
+		if (!$Winget){ WingetTempDownload }
 		try
 		{
 			$Install = WingetRun -RunType install -PackageID $PackageID
