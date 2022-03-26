@@ -114,7 +114,8 @@ function WingetTempDownload # Download WinGet from blob storage if unable to ins
 function WingetRun {
 param (
 	$PackageID,
-	$RunType
+	$RunType,
+	$Winget
 )
 	& $Winget $RunType --id $PackageID --source Winget --silent --accept-package-agreements --accept-source-agreements 
 }
@@ -145,7 +146,7 @@ if (!($Winget))
 		if (!$Winget){ WingetTempDownload }
 		try
 		{
-			$Install = WingetRun -RunType install -PackageID $PackageID
+			$Install = WingetRun -Winget $Winget -RunType install -PackageID $PackageID
 			Write-Log $Install
 		}
 		Catch
@@ -164,7 +165,7 @@ if (!($Winget))
 			WingetTempDownload
 			try
 			{
-				$Install = WingetRun -RunType install -PackageID $PackageID
+				$Install = WingetRun -Winget $Winget -RunType install -PackageID $PackageID
 				Write-Log $Install
 			}
 			Catch
@@ -187,7 +188,7 @@ if (!($Winget))
 else
 {
 	Write-Log "Winget found at $($Winget)"
-	$Install = WingetRun -RunType install -PackageID $PackageID
+	$Install = WingetRun -Winget $Winget -RunType install -PackageID $PackageID
 	Write-Log $Install
 }
 #endregion
