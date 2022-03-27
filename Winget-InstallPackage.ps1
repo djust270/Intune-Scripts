@@ -51,18 +51,11 @@ If ($ENV:PROCESSOR_ARCHITEW6432 -eq "AMD64")
 function InstallWingetAsSystem # Install WinGet as logged on user by creating a scheduled task
 {
 	$script = @'
-$hasPackageManager = Get-AppPackage -name "Microsoft.DesktopAppInstaller"
-
-	if(!$hasPackageManager)
-	{
-		$releases_url = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
-
-		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-		$releases = Invoke-RestMethod -uri "$($releases_url)"
-		$latestRelease = $releases.assets | Where { $_.browser_download_url.EndsWith("msixbundle") } | Select -First 1
-	
-		Add-AppxPackage -Path $latestRelease.browser_download_url
-	}
+$releases_url = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$releases = Invoke-RestMethod -uri "$($releases_url)"
+$latestRelease = $releases.assets | Where { $_.browser_download_url.EndsWith("msixbundle") } | Select -First 1
+Add-AppxPackage -Path $latestRelease.browser_download_url
 '@
 	if (!(test-path "$env:systemdrive\automation")) { mkdir "$env:systemdrive\automation" }
 	$script | out-file "$env:systemdrive\automation\script.ps1"
