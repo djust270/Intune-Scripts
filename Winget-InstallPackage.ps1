@@ -116,7 +116,7 @@ param (
 function VisualC++Install {
 $url = 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
 $WebClient = New-Object System.Net.WebClient
-$WebClient.DownloadFile('https://djstorage2.blob.core.windows.net/scriptsupport/WinGet.zip', "$env:Temp\vc_redist.x64.exe")
+$WebClient.DownloadFile('https://aka.ms/vs/17/release/vc_redist.x64.exe', "$env:Temp\vc_redist.x64.exe")
 $WebClient.Dispose()
 start-process "$env:temp\vc_redist.x64.exe" -argumentlist "/q /norestart" -Wait
 }
