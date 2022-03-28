@@ -113,8 +113,13 @@ param (
 	& $Winget $RunType --id $PackageID --source Winget --silent --accept-package-agreements --accept-source-agreements 
 }
 
-
-
+function VisualC++Install {
+$url = 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
+$WebClient = New-Object System.Net.WebClient
+$WebClient.DownloadFile('https://djstorage2.blob.core.windows.net/scriptsupport/WinGet.zip', "$env:Temp\vc_redist.x64.exe")
+$WebClient.Dispose()
+start-process "$env:temp\vc_redist.x64.exe" -argumentlist "/q /norestart" -Wait
+}
 
 #endregion HelperFunctions
 #region Script
@@ -124,10 +129,10 @@ $loggedOnUser = (gcim win32_computersystem).username
 $Winget = gci "$env:ProgramFiles\WindowsApps" -Recurse -File | where { $_.name -like "AppInstallerCLI.exe" -or $_.name -like "Winget.exe" } | select -ExpandProperty fullname
 # If there are multiple versions, select latest
 if ($Winget.count -gt 1) { $Winget = $Winget[-1] }
-$WingetTemp = gci $env:TEMP -Recurse -File | where name -like AppInstallerCLI.exe | select -ExpandProperty fullname
 # Try to install Winget if not already installed
 if (!($Winget))
 {
+VisualC++Install 
 	if ($loggedOnUser)
 	{
 		Write-Log -message "Attempting to install Winget as System under $($loggedOnUser)"
