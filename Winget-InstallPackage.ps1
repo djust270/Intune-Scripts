@@ -1,4 +1,4 @@
-﻿<#	
+<#	
 	.NOTES
 	===========================================================================
 	 Created with: 	SAPIEN Technologies, Inc., PowerShell Studio 2021 v5.8.195
@@ -108,7 +108,6 @@ function WingetRun {
 param (
 	$PackageID,
 	$RunType,
-	$Winget
 )
 	& $Winget $RunType --id $PackageID --source Winget --silent --accept-package-agreements --accept-source-agreements 
 }
@@ -139,7 +138,7 @@ if (!($Winget))
 		if (!$Winget){ WingetTempDownload }
 		try
 		{
-			$Install = WingetRun -Winget $Winget -RunType install -PackageID $PackageID
+			$Install = WingetRun -RunType install -PackageID $PackageID
 			Write-Log $Install
 		}
 		Catch
@@ -158,7 +157,7 @@ if (!($Winget))
 			WingetTempDownload
 			try
 			{
-				$Install = WingetRun -Winget $Winget -RunType install -PackageID $PackageID
+				$Install = WingetRun -RunType install -PackageID $PackageID
 				Write-Log $Install
 			}
 			Catch
@@ -181,9 +180,7 @@ if (!($Winget))
 else
 {
 	Write-Log "Winget found at $($Winget)"
-	$Install = WingetRun -Winget $Winget -RunType install -PackageID $PackageID
+	$Install = WingetRun -RunType install -PackageID $PackageID
 	Write-Log $Install
 }
 #endregion
-
-
