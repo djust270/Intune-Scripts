@@ -159,7 +159,7 @@ $Winget = gci "$env:ProgramFiles\WindowsApps" -Recurse -File | where { $_.name -
 # If there are multiple versions, select latest
 if ($Winget.count -gt 1) { $Winget = $Winget[-1] }
 # If Visual C++ Redist. not installed, install it
-if (!$VisualC){ Install-VisualC }
+if (!$VisualC){ Write-Log -message "Visual C++ X64 not found. Attempting to install" ; Install-VisualC }
 if (!$Winget)
 { 
 	if ($loggedOnUser)
