@@ -107,7 +107,7 @@ function WingetTempDownload # Download WinGet from blob storage if unable to ins
 function WingetRun {
 param (
 	$PackageID,
-	$RunType,
+	$RunType
 )
 	& $Winget $RunType --id $PackageID --source Winget --silent --accept-package-agreements --accept-source-agreements 
 }
