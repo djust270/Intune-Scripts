@@ -69,6 +69,8 @@ Add-AppxPackage -Path $latestRelease.browser_download_url
 	Start-Sleep -Seconds 120
 	Unregister-ScheduledTask -TaskName RunScript -Confirm:$false
 	Remove-Item C:\automation\script.ps1
+    $Global:Winget = gci "$env:programfiles\WindowsApps" -Recurse -File | where { $_.name -like "AppInstallerCLI.exe" -or $_.name -like "Winget.exe" } | select -ExpandProperty fullname
+
 }
 
 
@@ -89,6 +91,7 @@ function WingetTempDownload # Download WinGet from blob storage if unable to ins
 	Catch
 	{
 		Write-Log $error
+		exit 1
 	}
 	
 	try
@@ -100,6 +103,7 @@ function WingetTempDownload # Download WinGet from blob storage if unable to ins
 	Catch
 	{
 		Write-Log $Error
+		exit 1
 	}
 		
 	$WebClient.Dispose()
@@ -113,7 +117,7 @@ param (
 	& $Winget $RunType --id $PackageID --source Winget --silent --accept-package-agreements --accept-source-agreements 
 }
 
-function VisualC++Install {
+function Install-VisualC {
 $url = 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
 $WebClient = New-Object System.Net.WebClient
 $WebClient.DownloadFile('https://aka.ms/vs/17/release/vc_redist.x64.exe', "$env:Temp\vc_redist.x64.exe")
@@ -121,30 +125,76 @@ $WebClient.Dispose()
 start-process "$env:temp\vc_redist.x64.exe" -argumentlist "/q /norestart" -Wait
 }
 
+function Get-RegUninstallKey
+{
+	param (
+		[string]$DisplayName
+	)
+	$ErrorActionPreference = 'Continue'
+	#$UserSID = (New-Object -ComObject Microsoft.DiskQuota).TranslateLogonNameToSID((Get-CimInstance -Class Win32_ComputerSystem).Username)
+	$uninstallKeys = "registry::HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall", "registry::HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+	$softwareTable = @()
+	
+	foreach ($key in $uninstallKeys)
+	{
+		$softwareTable += Get-Childitem $key | Get-ItemProperty | where displayname | Sort-Object -Property displayname
+	}
+	if ($DisplayName)
+	{
+		$softwareTable | where displayname -Like "*$DisplayName*"
+	}
+	else
+	{
+		$softwareTable | Sort-Object -Property displayname -Unique
+	}
+	
+}
+
+
 #endregion HelperFunctions
 #region Script
 
+$VisualC = Get-RegUninstallKey -DisplayName "Microsoft Visual C++ 2015-2022 Redistributable (x64)"
 $loggedOnUser = (gcim win32_computersystem).username
 # Get path for Winget executible
 $Winget = gci "$env:ProgramFiles\WindowsApps" -Recurse -File | where { $_.name -like "AppInstallerCLI.exe" -or $_.name -like "Winget.exe" } | select -ExpandProperty fullname
 # If there are multiple versions, select latest
 if ($Winget.count -gt 1) { $Winget = $Winget[-1] }
-# Try to install Winget if not already installed
-if (!($Winget))
-{
-VisualC++Install 
+# If Visual C++ Redist. not installed, install it
+if (!$VisualC){ 
+Write-Log -message "Visual C++ X64 not found. Attempting to install" 
+try {
+	Install-VisualC
+}
+Catch [System.InvalidOperationException]{
+Write-Log -message "Error installing visual c++ redistributable. Attempting install once more"
+Start-Sleep -Seconds 5
+Install-VisualC
+}
+Catch {
+Write-Log -message "Failed to install visual c++ redistributable!"
+Write-Log -message $_
+exit 1
+}
+$VisualC = Get-RegUninstallKey -DisplayName "Microsoft Visual C++ 2015-2022 Redistributable (x64)"
+if (!$VisualC){Write-Log -message "Visual C++ Redistributable not found!" ; exit 1}
+else {Write-Log -message "Successfully installed Microsoft Visual C++ 2015-2022 Redistributable (x64)"}
+}
+# If Winget is not found, attempt to install it, or download copy from baselob storage
+if (!$Winget)
+{ 
 	if ($loggedOnUser)
 	{
 		Write-Log -message "Attempting to install Winget as System under $($loggedOnUser)"
 		InstallWingetAsSystem
-		$Winget = gci "C:\Program Files\WindowsApps" -Recurse -File | where { $_.name -like "AppInstallerCLI.exe" -or $_.name -like "Winget.exe" } | select -ExpandProperty fullname
 		# If more than one version of Winget, select the latest
 		if ($Winget.count -gt 1) { $Winget = $Winget[-1] }
 		# If WinGet is not found, download copy from Blob storage
-		if (!$Winget){ WingetTempDownload }
+		if (!$Winget){Write-Log -message "Downloading winget from blob storage" ;  WingetTempDownload }
 		try
 		{
-			$Install = WingetRun -RunType install -PackageID $PackageID
+			Write-Log -message "Winget varibale $($winget)"
+            $Install = WingetRun -RunType install -PackageID $PackageID
 			Write-Log $Install
 		}
 		Catch
