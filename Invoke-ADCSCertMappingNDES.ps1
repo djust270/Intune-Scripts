@@ -1,3 +1,4 @@
+#requires -module PSPKI
 # Sourced from https://system32.blog/post/adsmapcertificates/
 #region Static Definitions
 [string]$CertAuthority = "CA"
@@ -87,7 +88,6 @@ $certs = Get-IssuedRequest -CertificationAuthority $CertAuthority -Filter "NotAf
 Write-Host("[$(Get-Date)] Processing Certificates..")
 foreach($cert in ($certs | where request.requestername -eq $NDESServiceAccount | sort requestid)){
     $requester = $cert.'CommonName'
-    $requesterSplit = $requester.Split("\")
     $CN = $requester
 
     # Check if we found this domain
