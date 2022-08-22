@@ -30,14 +30,14 @@ $Blacklisted = @(
 )
 $AvailableUpdates = Get-WGInstalled | where-object { $_.id -notin $Blacklisted -and $_.update }
 Write-Log -message "Packages with Updates Available:"
-$AvailableUpdates | select Name, Version | Out-File -FilePath "$Env:Temp\$Log" -Append -Encoding utf8
+$AvailableUpdates | select Name, Version | Out-File -FilePath "$logpath\$Log" -Append -Encoding utf8
 
 
 foreach ($App in $AvailableUpdates) # Invoke upgrade for each updatable app and log results
 {
 	[void](Get-Process | Where-Object { $_.name -Like "*$App.Name*" } | Stop-Process -Force)
 	$UpgradeRun = & $WingetPath upgrade --id $App.id -h --accept-package-agreements --accept-source-agreements
-	$UpgradeRun | Out-File -FilePath "$env:TEMP\$log" -Append -Encoding utf8
+	$UpgradeRun | Out-File -FilePath "$logpath\$log" -Append -Encoding utf8
 	$Status = [bool]($UpgradeRun | select-string -SimpleMatch "Successfully installed")
 	if ($Status -eq $true)
 	{
@@ -54,12 +54,12 @@ foreach ($App in $AvailableUpdates) # Invoke upgrade for each updatable app and 
 if ($Success.count -gt 0)
 {
 	Write-Log -message "Successful Upgraded the following:"
-	$Success | Out-File -FilePath "$env:TEMP\$log" -Append -Encoding utf8
+	$Success | Out-File -FilePath "$logpath\$log" -Append -Encoding utf8
 	"Sucessfully Updated the following apps:`n{0}" -f $($Success | Select-Object -Property name)
 }
 
 if ($Failed.count -gt 0)
 {
 	Write-Log -message "Failed to Upgrade the following:"
-	$Failed | Out-File -FilePath "$env:TEMP\$log" -Append -Encoding utf8
+	$Failed | Out-File -FilePath "$logpath\$log" -Append -Encoding utf8
 }
