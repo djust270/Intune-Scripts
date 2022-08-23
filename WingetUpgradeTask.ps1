@@ -35,7 +35,7 @@ $LogDate = Get-Date -Format dd-MM-yy_HH-mm # go with the EU format day / month /
 $Log = "$LogName-$LogDate.log"
 $LogPath = "$env:ProgramData\Microsoft\IntuneManagementExtension\Logs"
 Import-Module WingetTools
-$WingetPath = Get-WingetPath
+$WingetPath = Get-WGPath
 
 # Add any apps you do not wish to get updated here (for instance apps that auto-update). Use the Winget ID
 $Blacklisted = @(
