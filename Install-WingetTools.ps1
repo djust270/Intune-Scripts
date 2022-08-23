@@ -112,7 +112,7 @@ if (-Not $ThreadJobInstalled) # Install ThreadJob module if not installed
 
 Set-ExecutionPolicy bypass -Scope Process -Force
 Import-Module WingetTools
-$WingetPath = Get-WingetPath
+$WingetPath = Get-WGPath
 $VisualC = Get-RegUninstallKey -DisplayName "Microsoft Visual C++ 2015-2022 Redistributable (x64)"
 $loggedOnUser = (Get-CimInstance win32_computersystem).username
 
@@ -147,7 +147,7 @@ if (-Not $WingetPath)
 		Write-Log -message "Attempting to install Winget as System under $($loggedOnUser)"
 		Install-WingetAsSystem
 		# If more than one version of Winget, select the latest
-		$WingetPath = Get-WingetPath
+		$WingetPath = Get-WGPath
 		if ($WingetPath.count -gt 1) { $WingetPath = $Winget[-1] }
 		if (-Not $WingetPath) { "Winget not found after attempting install as system. Exiting."; exit 1 }
 	}
