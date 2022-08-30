@@ -51,9 +51,10 @@ function Install-WingetTools #Install the WingetTools module.
 	Install-Module -Name WingetTools
 	if (-Not [bool](Get-Module -ListAvailable -Name WingetTools))
 	{
-		$GithubURL = "https://github.com/djust270/WingetTools/archive/refs/heads/main.zip"
+		$GithubURL = "https://github.com/jdhitsolutions/WingetTools/archive/refs/heads/main.zip"
+		$ModuleZipFile = "$Env:TEMP\WingetTools.zip"
 		$WebClient = [System.Net.WebClient]::new()
-		$WebClient.DownloadFile($GithubURL, "$Env:TEMP\WingetTools.zip")
+		$WebClient.DownloadFile($GithubURL, $ModuleZipFile)
 		Expand-Archive -Path "$Env:TEMP\WingetTools.zip" -DestinationPath "$env:windir\System32\WindowsPowerShell\v1.0\Modules"
 		Rename-Item -Path "$env:windir\System32\WindowsPowerShell\v1.0\Modules\WingetTools-main" -NewName "WingetTools"
 	}
