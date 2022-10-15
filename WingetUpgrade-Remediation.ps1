@@ -64,3 +64,8 @@ if ($Failed.count -gt 0)
 	Write-Log -message "Failed to Upgrade the following:"
 	$Failed | Out-File -FilePath "$logpath\$log" -Append -Encoding utf8
 }
+
+# Cleanup any logfiles 14 days old or older
+$Limit = (Get-Date).AddDays(-14)
+$OldLogs = Get-ChildItem $logpath | Where-Object {$_.name -like "WingetPackageUpgrade*.log" -and ($Limit - $_.CreationTime).days -ge 14 }
+$OldLogs | Foreach-Object { Remove-Item -FilePath $_.FullName  }
