@@ -23,8 +23,8 @@ function Get-RegUninstallKey
 		[string]$DisplayName
 	)
 	$ErrorActionPreference = 'Continue'
-	#$UserSID = (New-Object -ComObject Microsoft.DiskQuota).TranslateLogonNameToSID((Get-CimInstance -Class Win32_ComputerSystem).Username)
-	$uninstallKeys = "registry::HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall", "registry::HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+	$UserSID = ([System.Security.Principal.NTAccount](Get-CimInstance Win32_ComputerSystem).UserName).Translate([System.Security.Principal.SecurityIdentifier]).Value
+	$uninstallKeys = "registry::HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall", "registry::HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall","registry::HKU\$UserSID\Software\Microsoft\Windows\CurrentVersion\Uninstall"
 	$softwareTable = @()
 	
 	foreach ($key in $uninstallKeys)
