@@ -33,7 +33,7 @@ function Get-RegUninstallKey
 	}
 	if ($DisplayName)
 	{
-		$softwareTable | where displayname -Like "*$DisplayName*"
+		$softwareTable | Where-Object {$_.displayname -Like "*$DisplayName*"}
 	}
 	else
 	{
