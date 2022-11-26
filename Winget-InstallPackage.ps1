@@ -12,13 +12,18 @@
 	Use as base for any install with WinGet. Simply specify the PackageID and log variables. 
 .PARAMETER PackageID
 Specify the WinGet ID. Use WinGet Search "SoftwareName" to locate the PackageID
+.PARAMETER AdditionalInstallArgs
+Specify Additional Installation Arguments to pass to WinGet https://learn.microsoft.com/en-us/windows/package-manager/winget/install
     .EXAMPLE
 powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Google.Chrome" -Log "ChromeWingetInstall.log"
 	.EXAMPLE
 powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Notepad++.Notepad++" -Log "NotepadPlusPlus.log"
+	.EXAMPLE
+powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Python.Python.3.11" -Log "Python3Install.log" -AdditionalInstallArgs "--architecture x64"
 #>
 param (
 	$PackageID,
+	$AdditionalInstallArgs,
 	$Log
 )
 
@@ -197,9 +202,10 @@ function WingetTempDownload # Download WinGet from blob storage if unable to ins
 function WingetRun {
 param (
 	$PackageID,
-	$RunType
+	$RunType,
+	$AdditionalArgs
 )
-	& $Winget $RunType --id $PackageID --source Winget --silent --accept-package-agreements --accept-source-agreements 
+	& $Winget $RunType --id $PackageID --source Winget --silent --scope Machine $AdditionalArgs --accept-package-agreements --accept-source-agreements 
 }
 
 function Install-VisualC {
