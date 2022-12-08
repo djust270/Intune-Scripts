@@ -14,7 +14,7 @@
 .PARAMETER PackageID
 Specify the WinGet ID. Use WinGet Search "SoftwareName" to locate the PackageID
     .EXAMPLE
-powershell.exe -executionpolicy bypass -file Winget-InstallStorePackage.ps1 -PackageID "9WZDNCRFJB13" -Log "ChromeWingetInstall.log"
+powershell.exe -executionpolicy bypass -file Winget-InstallStorePackage.ps1 -PackageID "9WZDNCRFJB13" -Log "FreshPaintWingetInstall.log"
 #>
 param (
 	$PackageID,
