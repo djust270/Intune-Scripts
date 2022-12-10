@@ -37,7 +37,7 @@ If ($ENV:PROCESSOR_ARCHITEW6432 -eq "AMD64")
 				"Boolean"         { $argsString += "-$k `$$($MyInvocation.BoundParameters[$k]) " }
 			}
 		}
-		Start-Process -FilePath "$ENV:WINDIR\SysNative\WindowsPowershell\v1.0\PowerShell.exe" -ArgumentList "-File `"$($PSScriptRoot)\Winget-InstallPackage.ps1`" $($argsString)" -Wait -NoNewWindow
+		Start-Process -FilePath "$ENV:WINDIR\SysNative\WindowsPowershell\v1.0\PowerShell.exe" -ArgumentList "-File `"$($PSScriptRoot)\Winget-InstallStorePackage.ps1`" $($argsString)" -Wait -NoNewWindow
 	}
 	Catch
 	{
