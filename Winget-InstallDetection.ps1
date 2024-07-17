@@ -20,20 +20,36 @@ $SoftwareName = ''
 function Get-RegUninstallKey
 {
 	param (
-		[string]$DisplayName
+	[string]$DisplayName
 	)
-	$ErrorActionPreference = 'Continue'
-	$UserSID = ([System.Security.Principal.NTAccount](Get-CimInstance Win32_ComputerSystem).UserName).Translate([System.Security.Principal.SecurityIdentifier]).Value
-	$uninstallKeys = "registry::HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall", "registry::HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall","registry::HKU\$UserSID\Software\Microsoft\Windows\CurrentVersion\Uninstall"
-	$softwareTable = @()
-	
-	foreach ($key in $uninstallKeys)
-	{
-		$softwareTable += Get-Childitem $key | Get-ItemProperty | where displayname | Sort-Object -Property displayname
+	$uninstallKeys = @(
+		"registry::HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall"
+		"registry::HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+		)
+    $LoggedOnUser = (Get-CimInstance -ClassName Win32_ComputerSystem).UserName
+	if ($LoggedOnUser){
+	$UserSID = ([System.Security.Principal.NTAccount](Get-CimInstance -ClassName Win32_ComputerSystem).UserName).Translate([System.Security.Principal.SecurityIdentifier]).Value
+    $UninstallKeys += @("registry::HKU\$UserSID\Software\Microsoft\Windows\CurrentVersion\Uninstall" , "registry::HKU\$UserSID\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall")
+	}
+	$softwareTable =@()	
+	foreach ($key in $uninstallKeys){
+        if (-Not (Test-Path $Key)){
+            Write-Warning "$Key not found"
+            continue
+        }
+		$softwareTable += Get-Childitem $key | 
+		foreach {
+                try {
+                Get-ItemProperty $_.pspath | Where-Object { $_.displayname } | Sort-Object -Property displayname
+                }
+                catch [System.InvalidCastException] {
+                    # Ignore error as I was occasionally getting an invalid cast error on Get-ItemProperty
+                }
+		}
 	}
 	if ($DisplayName)
 	{
-		$softwareTable | Where-Object {$_.displayname -Like "*$DisplayName*"}
+		$softwareTable | Where-Object { $_.displayname -Like "*$DisplayName*" }
 	}
 	else
 	{
