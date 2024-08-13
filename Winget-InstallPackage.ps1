@@ -119,10 +119,10 @@ function Download-Winget {
 		Write-Log "Downloading 7zip CLI executable..."
 		# Create temp 7zip CLI folder
 		New-Item -ItemType Directory -Path $7zipFolder -Force
-		Invoke-WebRequest -UseBasicParsing -Uri https://www.7-zip.org/a/7zr.exe -OutFile .\7zr.exe
-		Invoke-WebRequest -UseBasicParsing -Uri https://www.7-zip.org/a/7z2408-extra.7z -OutFile .\7zr-extra.7z
+		Invoke-WebRequest -UseBasicParsing -Uri https://www.7-zip.org/a/7zr.exe -OutFile "$7zipFolder\7zr.exe"
+		Invoke-WebRequest -UseBasicParsing -Uri https://www.7-zip.org/a/7z2408-extra.7z -OutFile "$7zipFolder\7zr-extra.7z"
 		Write-Log "Extracting 7zip CLI executable to ${7zipFolder}..."
-		& .\7zr.exe x .\7zr-extra.7z -o"$7zipFolder" -y
+		& "$7zipFolder\7zr.exe" x "$7zipFolder\7zr-extra.7z" -o"$7zipFolder" -y
 	}
 	catch {
 		Write-Log "Failed to download 7zip CLI executable!"
